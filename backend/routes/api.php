@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/assignments', [AssignmentController::class, 'getAllAssignments']);
+Route::get('/assignment/{id}', [AssignmentController::class, 'getAssignmentDetails']);
+Route::get('/assignments/{user_id}', [AssignmentController::class, 'getAssignmentsOfUser']);
 Route::get('reviews/{assignmentId}', [ReviewController::class, 'getReviewsByAssignment']);
 
 
@@ -19,12 +21,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     
     // assignments
+    Route::get('review-assignment', [AssignmentController::class, 'getAllAssignmentsForReview']);
     Route::post('create-assignment', [AssignmentController::class, 'createAssignment']);
-    Route::put('update-assignment/{id}', [AssignmentController::class, 'update']);
+    Route::post('update-assignment/{id}', [AssignmentController::class, 'update']);
     Route::delete('delete-assignment/{id}', [AssignmentController::class, 'destroy']);
     
     // reviews
     Route::post('create-review/{assignmentId}', [ReviewController::class, 'store']);
     Route::put('update-review/{id}', [ReviewController::class, 'update']);
-    Route::delete('delete-assignment/{id}', [ReviewController::class, 'destroy']);
+    Route::delete('delete-review/{id}', [ReviewController::class, 'destroy']);
 });

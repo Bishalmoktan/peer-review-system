@@ -12,4 +12,14 @@ class Review extends Model
     protected $fillable = ['assignment_id', 'reviewer_id', 'feedback', 'rating'];
     public $incrementing = false;
     protected $keyType = 'string';
+
+    public function assignment()
+{
+    return $this->belongsTo(Assignment::class, 'assignment_id', 'id');
+}
+
+public function reviewer()
+{
+    return $this->belongsTo(User::class, 'reviewer_id', 'id');
+}   
 }

@@ -12,5 +12,12 @@ class Assignment extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'assignment_id', 'id');
+    }
 }

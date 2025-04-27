@@ -17,6 +17,30 @@ class AssignmentController extends Controller
         ]);
     }
 
+    public function getAllAssignmentsForReview(){
+        $assignments = Assignment::where('user_id', '!=', Auth::id())  ->with('user')  -> orderBy('created_at', 'desc')->get();
+        return response() -> json([
+            'success' => true,
+            'assignments' => $assignments
+        ]);
+    }
+
+    public function getAssignmentsOfUser($user_id){
+        $assignments = Assignment::where("user_id", "=", $user_id) -> with('reviews.reviewer') -> orderBy('created_at', 'desc') ->get();
+        return response() -> json([
+            'success' => true,
+            'assignments' => $assignments
+        ]);
+    }
+
+    public function getAssignmentDetails($id){
+        $assignment = Assignment::findOrFail($id);
+        return response() -> json([
+            'success' => true,
+            'assignment' => $assignment
+        ]);
+    }
+
     public function createAssignment(Request $request){
         $request->validate([
             'title' => 'required|string|max:255',
@@ -42,12 +66,13 @@ class AssignmentController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+
         $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'file' => 'sometimes|required|mimes:pdf|max:20480',
+            'title' => 'sometimes|string|max:255',
+            'file' => 'sometimes|mimes:pdf|max:20480',
         ]);
 
-        if ($request->has('title')) {
+        if ($request->filled('title')) {
             $assignment->title = $request->title;
         }
 
