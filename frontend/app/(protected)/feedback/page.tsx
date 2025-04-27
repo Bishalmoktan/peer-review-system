@@ -33,6 +33,8 @@ const FeedbackPage = () => {
         {data.map((assignment) => (
           <AssignmentCard key={assignment.id} {...assignment} />
         ))}
+
+        {data.length === 0 && <p>No assignment submitted.</p>}
       </div>
     </div>
   );

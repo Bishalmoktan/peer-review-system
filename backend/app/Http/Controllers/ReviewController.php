@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
+use App\Models\Assignment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,6 +50,41 @@ class ReviewController extends Controller
             ->get();
 
         return response()->json($reviews);
+    }
+
+    public function getRecentReviews(){
+        $userId = Auth::id(); 
+
+        $assignmentIds = Assignment::where('user_id', $userId)->pluck('id');
+    
+        $feedbacks = Review::with('reviewer')
+            ->whereIn('assignment_id', $assignmentIds)
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+            return response()->json([
+                'success' => true,
+                'feedbacks' => $feedbacks
+            ]);
+    
+    }
+
+    public function getAllReviews(){
+        $userId = Auth::id();
+
+        $assignmentIds = Assignment::where('user_id', $userId)->pluck('id');
+    
+        $feedbacks = Review::with('reviewer')
+            ->whereIn('assignment_id', $assignmentIds)
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        return response()->json([
+            'success' => true,
+            'feedbacks' => $feedbacks
+        ]);
+    
     }
 
 

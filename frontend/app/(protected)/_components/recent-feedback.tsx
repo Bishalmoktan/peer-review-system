@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { FeedbackCard } from "./feedback-card";
+import { Review } from "@/types/reviews";
+import { api } from "@/lib/api";
 
 const adjectives = [
   "Swift",
@@ -60,43 +62,24 @@ function generateRandomName() {
   return `${adjective} ${noun}`;
 }
 
-// Generate a random rating between 3 and 5
-function generateRandomRating() {
-  return Math.floor(Math.random() * 3) + 3;
-}
-
-// Generate a random comment
-function generateRandomComment() {
-  return feedbackComments[Math.floor(Math.random() * feedbackComments.length)];
-}
-
-// Generate a random seed for avatar color
 function generateRandomSeed() {
   return Math.random().toString(36).substring(2, 8);
 }
 
 const RecentFeedback = () => {
-  const [feedbacks, setFeedbacks] = useState<
-    Array<{
-      id: number;
-      name: string;
-      rating: number;
-      comment: string;
-      avatarSeed: string;
-    }>
-  >([]);
+  const [feedbacks, setFeedbacks] = useState<Review[]>([]);
 
   useEffect(() => {
-    // Generate 5 random feedbacks
-    const generatedFeedbacks = Array.from({ length: 5 }, (_, i) => ({
-      id: i,
-      name: generateRandomName(),
-      rating: generateRandomRating(),
-      comment: generateRandomComment(),
-      avatarSeed: generateRandomSeed(),
-    }));
+    const fetchFeedbacks = async () => {
+      try {
+        const res = await api.get("/api/recent-feedbacks");
+        setFeedbacks(res.data.feedbacks);
+      } catch (error) {
+        console.error("Failed to fetch feedbacks:", error);
+      }
+    };
 
-    setFeedbacks(generatedFeedbacks);
+    fetchFeedbacks();
   }, []);
 
   return (
@@ -105,12 +88,14 @@ const RecentFeedback = () => {
       {feedbacks.map((feedback) => (
         <FeedbackCard
           key={feedback.id}
-          name={feedback.name}
+          name={generateRandomName()}
           rating={feedback.rating}
-          comment={feedback.comment}
-          avatarSeed={feedback.avatarSeed}
+          comment={feedback.feedback}
+          avatarSeed={generateRandomSeed()}
         />
       ))}
+
+      {feedbacks.length === 0 && <p>No feedback available.</p>}
     </div>
   );
 };

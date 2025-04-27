@@ -42,6 +42,51 @@ interface Review {
   reviewer: User;
 }
 
+// Generate a random name
+function generateRandomName() {
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  return `${adjective} ${noun}`;
+}
+
+const adjectives = [
+  "Swift",
+  "Bright",
+  "Silent",
+  "Gentle",
+  "Bold",
+  "Clever",
+  "Eager",
+  "Fierce",
+  "Honest",
+  "Keen",
+  "Lively",
+  "Mighty",
+  "Noble",
+  "Polite",
+  "Quiet",
+  "Wise",
+];
+
+const nouns = [
+  "Falcon",
+  "Tiger",
+  "Dolphin",
+  "Phoenix",
+  "Panda",
+  "Eagle",
+  "Wolf",
+  "Fox",
+  "Owl",
+  "Hawk",
+  "Lynx",
+  "Raven",
+  "Badger",
+  "Beaver",
+  "Koala",
+  "Otter",
+];
+
 const AssignmentCard = ({
   title,
   file_path,
@@ -140,47 +185,46 @@ const AssignmentCard = ({
             </h3>
 
             <div className="space-y-4">
-              {reviews.slice(0, displayedReviews).map((review) => (
-                <div
-                  key={review.id}
-                  className="bg-white p-4 rounded-md border border-gray-100"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center">
-                      <Avatar className="h-8 w-8 mr-2">
-                        {review.reviewer && (
-                          <AvatarImage src={""} alt={review.reviewer.name} />
-                        )}
-                        <AvatarFallback>
-                          {review.reviewer.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium text-sm">
-                        {review.reviewer.name}
+              {reviews.slice(0, displayedReviews).map((review) => {
+                const name = generateRandomName();
+                return (
+                  <div
+                    key={review.id}
+                    className="bg-white p-4 rounded-md border border-gray-100"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        <Avatar className="h-8 w-8 mr-2">
+                          {review.reviewer && (
+                            <AvatarImage src={""} alt={name} />
+                          )}
+                          <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium text-sm">{name}</span>
+                      </div>
+                      <span className="text-xs text-gray-500">
+                        {format(new Date(review.created_at), "MMM d, yyyy")}
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500">
-                      {format(new Date(review.created_at), "MMM d, yyyy")}
-                    </span>
-                  </div>
 
-                  <div className="flex mb-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={cn(
-                          "h-4 w-4",
-                          star <= review.rating
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                        )}
-                      />
-                    ))}
-                  </div>
+                    <div className="flex mb-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={cn(
+                            "h-4 w-4",
+                            star <= review.rating
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300"
+                          )}
+                        />
+                      ))}
+                    </div>
 
-                  <p className="text-sm text-gray-700">{review.feedback}</p>
-                </div>
-              ))}
+                    <p className="text-sm text-gray-700">{review.feedback}</p>
+                  </div>
+                );
+              })}
 
               {reviews.length > displayedReviews && (
                 <Button

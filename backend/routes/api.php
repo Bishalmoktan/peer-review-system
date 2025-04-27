@@ -27,6 +27,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('delete-assignment/{id}', [AssignmentController::class, 'destroy']);
     
     // reviews
+    Route::get("recent-feedbacks", [ReviewController::class, 'getRecentReviews']);
+    Route::get("all-feedbacks", [ReviewController::class, 'getAllReviews']);
     Route::post('create-review/{assignmentId}', [ReviewController::class, 'store']);
     Route::put('update-review/{id}', [ReviewController::class, 'update']);
     Route::delete('delete-review/{id}', [ReviewController::class, 'destroy']);
